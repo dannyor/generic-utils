@@ -6,18 +6,17 @@
 	<packaging>jar</packaging>
 	<version>0.6.7</version>
 	<name>CLI</name>
-	<url>http://code.google.com/p/j-infra-utils</url>
+
+	<properties>
+		<!-- github server corresponds to entry in ~/.m2/settings.xml -->
+		<github.global.server>github</github.global.server>
+	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 			<version>2.4</version>
-		</dependency>
-		<dependency>
-			<groupId>dnl.utils</groupId>
-			<artifactId>lang-utils</artifactId>
-			<version>0.3</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -36,26 +35,47 @@
 		</extensions>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
+				<artifactId>maven-deploy-plugin</artifactId>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<altDeploymentRepository>internal.repo::default::file://${project.build.directory}/staging-mvn-repo</altDeploymentRepository>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.github.github</groupId>
+				<artifactId>site-maven-plugin</artifactId>
+				<!--<version>0.11</version>-->
+				<configuration>
+					<message>Maven artifacts for ${project.version}</message>  <!-- git commit message -->
+					<noJekyll>true</noJekyll>                                  <!-- disable webpage processing -->
+					<outputDirectory>${project.build.directory}/staging-mvn-repo</outputDirectory> <!-- matches distribution management repository url above -->
+					<branch>refs/heads/mvn-repo</branch>                       <!-- remote branch name -->
+					<includes><include>**/*</include></includes>
+					<repositoryName>generic-utils</repositoryName>      <!-- github repo name -->
+					<repositoryOwner>dannyor</repositoryOwner>    <!-- github username  -->
+				</configuration>
+				<executions>
+					<!-- run site-maven-plugin's 'site' target as part of the build's normal 'deploy' phase -->
+					<execution>
+						<goals>
+							<goal>site</goal>
+						</goals>
+						<phase>deploy</phase>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
-	<repositories>
-	<repository>
-			<id>dmaven</id>
-			<url>http://d-maven.googlecode.com/svn/trunk/repo/</url>
-		</repository>
-	</repositories>
+	<!--<repositories>-->
+	<!--<repository>-->
+			<!--<id>dmaven</id>-->
+			<!--<url>http://d-maven.googlecode.com/svn/trunk/repo/</url>-->
+		<!--</repository>-->
+	<!--</repositories>-->
 	<distributionManagement>
 		<repository>
-			<uniqueVersion>false</uniqueVersion>
-			<id>googlecode</id>
-			<url>svn:https://d-maven.googlecode.com/svn/trunk/repo/</url>
+			<id>internal.repo</id>
+			<name>Temporary Staging Repository</name>
+			<url>file://${project.build.directory}/staging-mvn-repo</url>
 		</repository>
 	</distributionManagement>
 </project>

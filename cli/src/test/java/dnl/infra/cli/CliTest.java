@@ -20,7 +20,6 @@ public class CliTest {
 
 		cli.addTimeRangeSetting("t", "[dd.MM.yyyy-dd.MM.yyyy] a time range", false);
 		cli.addAction("info", infoDesc, new CliActionListener() {
-			@Override
 			public void actionPerformed(CLI cli) {
 				
 			}
@@ -63,7 +62,6 @@ public class CliTest {
 		
 		cli.addTimeRangeSetting("t", "[dd.MM.yyyy-dd.MM.yyyy] a time range", false);
 		cli.addAction("info", infoDesc, new CliActionListener() {
-			@Override
 			public void actionPerformed(CLI cli) {
 				
 			}
@@ -94,7 +92,6 @@ public class CliTest {
 	}
 
 	private static class DummyListener implements CliActionListener {
-		@Override
 		public void actionPerformed(CLI cli) {
 		}
 
